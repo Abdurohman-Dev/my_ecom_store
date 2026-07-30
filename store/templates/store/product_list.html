@@ -19,6 +19,11 @@
             {% for product in products %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/200x200?text=No+Image" class="card-img-top" alt="No Image">
+                        {% endif %}
                         <div class="card-body">
                             <h5 class="card-title text-primary fw-bold"> <a href="{% url 'product_detail' product.pk %}"> {{ product.name }} </a> </h5>
                             <p class="card-text text-muted">{{ product.description | truncatewords:10 }}</p>

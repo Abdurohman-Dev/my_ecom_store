@@ -26,6 +26,26 @@
                 class="btn btn-sm rounded-pill px-4 fw-bold {% if selected_category == category.id %} btn-primary shadow {% else %} btn-outline-primary {% endif %}"> {{ category.name }} </a>
             {% endfor %}
         </div>
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6">
+                <form method="GET" action="{% url 'product_list' %}" class="d-flex">
+                    {% if selected_category %}
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                    {% endif %}
+                    <input type="text" name="search" 
+                    class="form-control form-control-lg rounded-pill px-4" 
+                    placeholder="እቃዎችን በስም ወይም በምድብ ይፈልጉ..." 
+                    value="{{ search_query | default:'' }}">
+                    <button class="btn btn-primary rounded-pill px-4 fw-bold" type="submit"> ፍለጋ </button>
+                    {% if search_query %}
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary rounded-pill px-3 fw-bold ms-2"> ፍለጋን አጥፋ </a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        <div class="text-center mb-4">
+            <span class="badge bg-info text-white fs-6 border px-3 py-2 rounded-pill shadow-sm">የተገኙ እቃዎች ብዛት፡- <strong>{{ product_count }} </strong></span>
+        </div>
         <div class="row">
             {% for product in products %}
                 <div class="col-md-4 mb-4">

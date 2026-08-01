@@ -9,21 +9,27 @@
                 <thead>
                     <tr>
                         <th>እቃ</th>
-                        <th>ብዛት</th>
+                        <th class="text-center"> ብዛት </th>
                         <th>የአንዱ ዋጋ</th>
                         <th>ጠቅላላ ዋጋ</th>
+                        <th class="text-center">እርምጃ</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in cart.items.all %}
-                    <tr>
-                        <td class="fw-bold">{{item.product.name}}</td>
-                        <td>
-                            <span class="badge bg-secondary fs-6 "> {{ item.quantity}}</span>
-                        </td>
-                        <td>{{item.product.price}} ብር </td>
-                        <td class="text-warning fw-bold"> {{ item.get_cost}} ብር </td>
-                    </tr>
+                        <tr>
+                            <td class="fw-bold">{{item.product.name}}</td>
+                            <td class="text-center">
+                                <a href="{% url 'decrease_cart_item' item.product.id %}" class="btn btn-outline-light me-1 fw-bold">-</a>
+                                <span class="badge bg-secondary fs-6 px-3 py-2 "> {{ item.quantity}}</span>
+                                <a href="{% url 'add_to_cart' item.product.id %}" class="btn btn-sm btn-outline-light  ms-1 fw-bold">+</a>
+                            </td>
+                            <td>{{item.product.price}} ብር </td>
+                            <td class="text-warning fw-bold"> {{ item.get_cost}} ብር </td>
+                            <td class="text-center">
+                                <a href="{% url 'remove_cart_item' item.product.id %}" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold">አጥፋ </a>
+                            </td>  
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -33,11 +39,11 @@
                 <a href="#" class="btn btn-success btn-lg rounded-pill px-4 fw-bold">ክፍያ ፈጽም (Checkout)</a>
             </div>
         </div>
-        {% else %}
-            <div class="alert alert-info text-center py-4">
-                <h4> የግዢ ቅርጫትህ ባዶ ነው! </h4>
-                <a href="{% url 'product_list' %}" class="btn btn-warning mt-3 rounded-pill fw-bold "> እቃዎችን መመልከት ጀምር </a>
-            </div>
-        {% endif %}
+    {% else %}
+        <div class="alert alert-info text-center py-4">
+            <h4> የግዢ ቅርጫትህ ባዶ ነው! </h4>
+            <a href="{% url 'product_list' %}" class="btn btn-warning mt-3 rounded-pill fw-bold "> እቃዎችን መመልከት ጀምር </a>
+        </div>
+    {% endif %}
 </div> 
 {% endblock content %}

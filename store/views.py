@@ -53,4 +53,22 @@ def add_to_cart(request, product_id):
 def cart_detail(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     return render(request, 'store/cart_detail.html', {'cart': cart})
-    
+@login_required
+def decrease_cart_item(request, product_id):
+    cart = Cart.objects.get(user=request.user)
+    product = get_object_or_404(Product, id=product_id)
+    cart_item = CartItem.objects.get(cart=cart,product=product)
+
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+    return redirect('cart_detail')
+@login_required
+def remove_cart_item(request, product_id):
+    cart = Cart.objects.get(user=request.user)
+    product = get_object_or_404(Product, id=product_id)
+    cart_item = CartItem.objects.get(cart=cart, product=product)
+    cart_item.delete()
+    return redirect('cart_detail')

@@ -11,6 +11,8 @@ urlpatterns=[
     path('logout/', auth_views.LogoutView.as_view(next_page= 'product_list'),name='logout'),
     path('add_to_cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/', views.cart_detail, name='cart_detail'),
+    path('cart/decrease/<int:product_id>/', views.decrease_cart_item, name='decrease_cart_item'),
+    path('cart/remove/<int:product_id>/', views.remove_cart_item, name='remove_cart_item'),
 ]
 if settings.DEBUG:
     from django.conf import settings

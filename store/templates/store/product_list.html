@@ -78,6 +78,7 @@
                             <h6 class="text-success fw-bold"> {{ product.price }} Birr.</h6>
                             <p class="small text-secondary"> ስቶክ ላይ ያለው:- {{ product.stock }}</p>
                             <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-primary btn-sm w-100"> ዝርዝሩን እይ </a>
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning rounded-pill  fw-bold"> ወደ ግዢ ቅርጫት ጨምር </a>
                         </div>
                     </div>
                 </div>

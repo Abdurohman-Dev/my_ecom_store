@@ -1,0 +1,43 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-warning fw-bold">የኔ የግዢ ቅርጫት (Shopping Cart)</h2>
+
+    {% if cart.items.all %}
+        <div class="table-rexponsive bg-dark p-4 rounded shadow">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>እቃ</th>
+                        <th>ብዛት</th>
+                        <th>የአንዱ ዋጋ</th>
+                        <th>ጠቅላላ ዋጋ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart.items.all %}
+                    <tr>
+                        <td class="fw-bold">{{item.product.name}}</td>
+                        <td>
+                            <span class="badge bg-secondary fs-6 "> {{ item.quantity}}</span>
+                        </td>
+                        <td>{{item.product.price}} ብር </td>
+                        <td class="text-warning fw-bold"> {{ item.get_cost}} ብር </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr class="text-light">
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h4 class="text-white">ድምር ዋጋ:- <span class="text-success fw-bold "> {{cart.get_total_price}} ብር </span></h4>
+                <a href="#" class="btn btn-success btn-lg rounded-pill px-4 fw-bold">ክፍያ ፈጽም (Checkout)</a>
+            </div>
+        </div>
+        {% else %}
+            <div class="alert alert-info text-center py-4">
+                <h4> የግዢ ቅርጫትህ ባዶ ነው! </h4>
+                <a href="{% url 'product_list' %}" class="btn btn-warning mt-3 rounded-pill fw-bold "> እቃዎችን መመልከት ጀምር </a>
+            </div>
+        {% endif %}
+</div> 
+{% endblock content %}

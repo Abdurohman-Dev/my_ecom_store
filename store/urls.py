@@ -14,6 +14,8 @@ urlpatterns=[
     path('cart/decrease/<int:product_id>/', views.decrease_cart_item, name='decrease_cart_item'),
     path('cart/remove/<int:product_id>/', views.remove_cart_item, name='remove_cart_item'),
     path('checkout/', views.checkout, name='checkout'),
+    path('order_success/', views.order_success, name='order_success'),
+    path('my_orders/', views.my_orders, name='my_orders'),
 ]
 if settings.DEBUG:
     from django.conf import settings

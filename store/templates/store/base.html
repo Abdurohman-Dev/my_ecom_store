@@ -18,14 +18,17 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item ">
-                        <a class="nav-link active" href="{% url 'product_list' %}">እቃዎች (Products)</a>
+                        <a class="nav-link active text-primary fw-bold" href="{% url 'product_list' %}">እቃዎች (Products)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-warning text-warning ms-2 px-3" href="{% url 'cart_detail' %}">የግዢ ቅርጫት (Shopping Cart)</a>
+                        <a class="nav-link btn btn-outline-primary text-warning ms-2 px-3" href="{% url 'cart_detail' %}">የግዢ ቅርጫት (Shopping Cart)</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item ms-3">
                             <span class="nav-text text-info fw-bold"> እንኳን ደህና መጡ, {{ user.username }} </span>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a href="{% url 'my_orders' %}" class="nav=link text-warning fw-bold btn  "> የኔ ትዕዛዞች </a>
                         </li>
                         <li class="nav-item ms-2">
                             <a class="btn btn-danger btn-sm text-light rounded-pill px-3" href="{% url 'logout' %}">ውጣ (Logout)</a>

@@ -102,5 +102,10 @@ def checkout(request):
         cart.items.all().delete()  # Clear the cart after checkout
         return redirect('order_success')  # Redirect to a success page after checkout
     return render(request, 'store/checkout.html', {'cart': cart})
-    
-    
+@login_required
+def order_success(request):
+    return render(request, 'store/order_success.html')
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'store/my_orders.html', {'orders': orders})

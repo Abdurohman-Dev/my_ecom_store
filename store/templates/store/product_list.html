@@ -1,45 +1,55 @@
 {% extends 'store/base.html' %}
 {% block content %}
-    <div class="container">
-        <div class="text-center my-4 p-4 bg-white rounded-3 shadow-sm border">
-            <h1 class="display-6 fw-bold text-primary mb-2"> የእቃዎች ዝርዝር (Product List) </h1>
-            <h4 class="text-muted mb-0 "> የሚፈልጉትን እቃ በካቴጎሪ መርጠው ይሸምቱ </h4>
+    <div class="container py-3">
+        <div class="card bg-gradient text-white border-secondary  my-4 p-4 bg-dark  rounded-4 shadow-lg text-center">
+            <div class="card-body">
+                <h1 class="display-6 fw-bold text-white mb-2"> የእቃዎች ዝርዝር (Product List) </h1>
+                <p class="lead text-light mb-0 "> የሚፈልጉትን እቃ በካቴጎሪ መርጠው ይሸምቱ </p>
+            </div>
         </div>
-        <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
-            <a href="{% url 'product_list' %}" class="btn btn-md rounded-pill px-4 fw-bold {% if not selected_category %} btn-dark shadow {% else%} btn-outline-dark {% endif %}"> ሁሉንም እቃዎች አሳይ </a>
-            {% for category in categories %}
-                <a href="{% url 'product_list' %}?category={{ category.id }}" 
-                class="btn btn-sm rounded-pill px-4 fw-bold {% if selected_category == category.id %} btn-primary shadow {% else %} btn-outline-primary {% endif %}"> {{ category.name }} </a>
-            {% endfor %}
+        <div class="mb-4">
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                <a href="{% url 'product_list' %}" 
+                class="btn {% if not selected_category %} btn-warning fw-bold {% else%} btn-outline-warning {% endif %} rounded-pill px-4 shadow-sm">
+                 ሁሉንም እቃዎች አሳይ </a>
+                {% for category in categories %}
+                    <a href="{% url 'product_list' %}?category={{ category.id }}" 
+                        class="btn {% if selected_category == category.id|stringformat:'s' %} btn-warning fw-bold {% else %} btn-outline-light {% endif %} rounded-pill px-4 shadow-sm"> 
+                         {{ category.name }} </a>
+                {% endfor %}
+            </div>
         </div>
         <div class="row justify-content-center mb-4">
-            <div class="col-md-6">
-                <form method="GET" action="{% url 'product_list' %}" class="d-flex">
+            <div class="col-12 col-md-8 col-lg-6 ">
+                <form method="GET" action="{% url 'product_list' %}">
                     {% if selected_category %}
-                    <input type="hidden" name="category" value="{{ selected_category }}">
+                        <input type="hidden" name="category" value="{{ selected_category }}">
                     {% endif %}
-                    <input type="text" name="search" 
-                    class="form-control form-control-lg rounded-pill px-4" 
-                    placeholder="እቃዎችን በስም ወይም በምድብ ይፈልጉ..." 
-                    value="{{ search_query | default:'' }}">
-                    <button class="btn btn-primary rounded-pill px-4 fw-bold" type="submit"> ፍለጋ </button>
-                    {% if search_query %}
-                        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary rounded-pill px-3 fw-bold ms-2"> ፍለጋን አጥፋ </a>
-                    {% endif %}
+                    <div class="input-group">
+                        <input type="text" name="search" class="from-control form-control-lg bg-dark text-light border-secondary rounded-start-pill px-4 fs-6"
+                            placeholder="እቃዎችን ስም ይፈልጉ..." value="{{ search_query | default:'' }}">
+                        <button class="btn btn-warning rounded-end-pill px-4 fw-bold" type="submit"> 
+                            <i class="bi bi-search"></i> ፍለጋ </button>
+                    </div>
                 </form>
+                {% if search_query %}
+                    <div class="mt-2 text-center">
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold ms-2"> ፍለጋውን አጥፋ </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
         <div class="text-center mb-4">
-            <span class="badge bg-info text-white fs-6 border px-3 py-2 rounded-pill shadow-sm">የተገኙ እቃዎች ብዛት፡- <strong>{{ product_count }} </strong></span>
+            <span class="badge bg-info text-dark fs-6  px-4 py-2 rounded-pill shadow-sm">የተገኙ እቃዎች ብዛት፡- {{ product_count|length }}</span>
         </div>
-        <div class="row">
+        <div class="row g-4">
             {% for product in products %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                        {% else %}
-                            <img src="https://via.placeholder.com/200x200?text=No+Image" class="card-img-top" alt="No Image">
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100 bg-dark text-light border-secondary shadow-lg rounded-4 overflow-hidden">
+                        {% if product.image %} 
+                            <div class="bg-white p-3 text-center" style="height: 230px;">
+                                <img src="{{ product.image.url }}" class="img-fluid h-100" style="object-fit: contain;" alt="{{ product.name }}">
+                            </div>
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title text-primary fw-bold"> <a href="{% url 'product_detail' product.pk %}"> {{ product.name }} </a> </h5>

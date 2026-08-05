@@ -1,33 +1,38 @@
 {% extends 'store/base.html' %}
 
 {% block content %}
-<div class="container my-5">
-    <h2 class="mb-4 text-warning mb-4 fw-bold"> የኔ ትዕዛዞች (My Orders) </h2>
+<div class="container py-4">
+    <h2 class="text-warning text-center mb-4 fw-bold"> የኔ ትዕዛዞች (My Orders) </h2>
     {% if orders %}
+    <div class="row g-4">
         {% for order in orders %}
-            <div class="card bg-dark text-light mb-4 shadow border-secondary">
-                <div class="card-header bg-black text-warning border-secondary align-items-center d-flex justify-content-between">
-                    <div>
-                        <span class="fw-bold text-warning"> ትዕዛዝ #:{{ order.id }} </span>
-                        <small class="text-muted ms-3"> ቀን: {{ order.created_at|date:"M d, Y" }} </small>
-                    </div>
-                    <div>
-                        {% if order.is_paid %}
-                            <span class="badge bg-success"> ተከፍሏል (Paid) </span>
+            <div class="card bg-dark text-light mb-4 shadow-sm h-100 border-secondary rounded-4 ">
+                <div class="card-header bg-black border-secondary align-items-center d-flex justify-content-between">
+                        <span class="fw-bold"> ትዕዛዝ #:{{ order.id }} </span>
+                    {% if order.status == 'Completed' or order.status == 'Delivered' %}
+                        <span class="badge bg-success"> ተደርሷል</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark"> በሂደት ላይ</span>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if order.is_paid %}
+                        <span class="badge bg-success"> ተከፍሏል (Paid) </span>
                         {% else %}
                             <span class="badge bg-danger"> ያልተከፈለ (Pending) </span>
                         {% endif %}
                     </div>
                 </div>
                 <div class="card-body">
+                    <p class="mb-1"><strong>የታዘዘበት ቀን:</strong> {{ order.created_at|date:"M d, Y" }} </p>
                     <p class="mb-1"><strong>አድራሻ:</strong> {{ order.shipping_address }}</p>
                     <p class="mb-1"><strong>ስልክ ቁጥር:</strong> {{ order.phone_number }}</p>
 
-                    <h6 class=" text-warning "> የተገዙ እቃዎች: </h6>
+                    <h6 class=" text-warning "> የታዘዙ እቃዎች: </h6>
                     <ul class="list-group mb-3 shadow">
                         {% for item in order.items.all %}
                             <li class="list-group-item d-flex justify-content-between lh-sm bg-dark text-light border-secondary">
-                                <span>{{item.product.name}} ({{item.quantity}})</span>
+                                <span>{{item.product.name}} (x{{item.quantity}})</span>
                                 <span> {{item.price}} Birr</span>
                             </li>
                         {% endfor %}

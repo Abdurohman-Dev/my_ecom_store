@@ -50,6 +50,12 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_paid = models.BooleanField(default=False)
 
+    STATUS_CHOICES = (
+        ('Pending','Pending'),
+        ('Shipped','Shipped'),
+        ('Delivered','Delivered')
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"

@@ -2,52 +2,67 @@
 
 {% block content %}
 <div class="container py-4">
-    <h2 class="text-warning text-center mb-4 fw-bold"> የኔ ትዕዛዞች (My Orders) </h2>
+    <h2 class="text-warning text-center mb-4 fw-bold">
+        <i class="bi bi-bag-check-fill me-2"></i> የኔ ትዕዛዞች (My Orders) </h2>
     {% if orders %}
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
         {% for order in orders %}
-            <div class="card bg-dark text-light mb-4 shadow-sm h-100 border-secondary rounded-4 ">
-                <div class="card-header bg-black border-secondary align-items-center d-flex justify-content-between">
-                        <span class="fw-bold"> ትዕዛዝ #:{{ order.id }} </span>
-                    {% if order.status == 'Completed' or order.status == 'Delivered' %}
-                        <span class="badge bg-success"> ተደርሷል</span>
-                    {% else %}
-                        <span class="badge bg-warning text-dark"> በሂደት ላይ</span>
-                    {% endif %}
-                </div>
-                <div>
-                    {% if order.is_paid %}
-                        <span class="badge bg-success"> ተከፍሏል (Paid) </span>
-                        {% else %}
-                            <span class="badge bg-danger"> ያልተከፈለ (Pending) </span>
-                        {% endif %}
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card bg-dark text-light border-secondary shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-header bg-black border-secondary align-items-center d-flex justify-content-between flex-wrap gap-2 py-3 px-4">
+                        <div>
+                            <h5 class="mb-0 fw-bold text-warning"> ትዕዛዝ {{ order.id }} </h5>
+                            <small class="text-muted"> የታዘዘበት ቀን: {{ order.created_at|date:"M d, Y - h:i A" }} </small>
+                        </div>
+                        <div>
+                            {% if order.status == 'Pending' %}
+                                <span class="badge bg-warning text-dark fs-6 rounded-pill px-3 py-2">
+                                    <i class="bi bi-hourglass-split me-1"></i> በሂደት ላይ (Pending) 
+                                </span>
+                            {% elif order.status == 'Shipped' %}
+                                <span class="badge bg-info text-dark fs-6 rounded-pill px-3 py-2">
+                                    <i class="bi bi-truck me-1"></i> ተልኳል (Shipped) 
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success fs-6 rounded-pill px-3 py-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i> ተከፍሏል (Delivered)
+                                </span>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <p class="mb-1"><strong>የታዘዘበት ቀን:</strong> {{ order.created_at|date:"M d, Y" }} </p>
-                    <p class="mb-1"><strong>አድራሻ:</strong> {{ order.shipping_address }}</p>
-                    <p class="mb-1"><strong>ስልክ ቁጥር:</strong> {{ order.phone_number }}</p>
-
-                    <h6 class=" text-warning "> የታዘዙ እቃዎች: </h6>
-                    <ul class="list-group mb-3 shadow">
-                        {% for item in order.items.all %}
-                            <li class="list-group-item d-flex justify-content-between lh-sm bg-dark text-light border-secondary">
-                                <span>{{item.product.name}} (x{{item.quantity}})</span>
-                                <span> {{item.price}} Birr</span>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div class="text-end">
-                        <span class="fs-5  fw-bold text-success"> ጠቅላላ ድምር ዋጋ (ETB): {{ order.total_price }} ብር</span>
+                    <div class="card-body p-4">
+                        <h6 class="text-light fw-bold border-bottom border-secondary pb-2 mb-3"> የታዘዙ እቃዎች:-</h6
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for item in order.items.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-dark text-light border-secondary">
+                                    <div> 
+                                        <span class="fw-semibold text-warning">{{item.product.name}} </span>
+                                        <span class="text-muted small ms-2">x {{item.quantity}} </span>
+                                    </div>
+                                    <span class="fw-bold "> {{ item.price}} Birr</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="row pt-2 border-top border-secondary">
+                            <div class="col-sm-6 mb-2 mb-sm-0"
+                                <small class="text-muted d-block"> አድራሻ:-{{ order.address }} </small>
+                                <small class="text-muted d-block"> ስልክ:- {{ order.phone_number}}</small>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <span class="text-muted small"> ጠቅላላ ዋጋ:-</span>
+                                <h4 class="text-success fw-bold mb-0 "> {{order.price}} Birr</h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
-    {% else %}
-        <div class="alert alert-info text-center bg-dark text-light border-info my-5">
-            <h4>እስካሁን ምንም ያዘዙት ትዕዛዝ የለም!</h4>
-            <a href="{url 'product_list'}" class="btn btn-warning mt-3 rounded-pill fw-bold"> ምርቶችን ይመልከቱ</a>
-        </div>
-    {% endif %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center bg-dark text-light border-info my-5">
+        <h4>እስካሁን ምንም ያዘዙት ትዕዛዝ የለም!</h4>
+        <a href="{url 'product_list'}" class="btn btn-warning mt-3 rounded-pill fw-bold"> ምርቶችን ይመልከቱ</a>
+    </div>
+{% endif %}
 </div>
 {% endblock %}

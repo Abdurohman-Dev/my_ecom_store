@@ -1,6 +1,12 @@
 {% extends 'store/base.html' %}
 
 {% block content %}
+<style>
+    .form-control::placeholder{
+        color: #aaaaaa !important;
+        opacity: 1 !important;
+    }
+</style>
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -35,11 +41,11 @@
                         <label class="form-label text-muted">አድራሻ (Address)</label>
                         <textarea name="address" class="from-control bg-black text-light border-secondary rounded-3" row="3" placeholder="ሙሉ አድራሻዎን ያስገቡ (ክልል፣ ዞን፣ ወረዳ...)">{{profile_form.address.value|default:''}}</textarea>
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label text-muted">ፕሮፋይል ምስል (Profile Image)</label>
+                    <div class="mb-4 pb-2">
+                        <label class="form-label text-warning small fw-bold"> ፕሮፋይል ምስል (Profile Image)</label>
                         <input type="file" name="profile_image" class="form-control bg-black text-light border-secondary rounded-3"
                     </div>
-                    <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill py-2">መረጃውን አስቀምጥ (Save Changes)</button>
+                    <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill py-2 mt-2">መረጃውን አስቀምጥ (Save Changes)</button>
                 </form>
             </div>
         </div>

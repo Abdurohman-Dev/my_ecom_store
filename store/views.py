@@ -5,6 +5,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CartItem, Product, Order, OrderItem
+from .forms import UserUpdateForm , ProfileUpdateForm
+from .models import Profile as ProfileModel
 def product_list(request):
     category_id = request.GET.get('category')
     search_query = request.GET.get('search')
@@ -109,3 +111,24 @@ def order_success(request):
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'store/my_orders.html', {'orders': orders})
+@login_required
+def Profile(request):
+    profile_obj, created = ProfileModel.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile_obj)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'ፕሮፋይልዎ በትክክል ተስተካክሏል!')
+            return redirect('profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=profile_obj)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form
+    }
+    return render(request, 'store/profile.html', context)

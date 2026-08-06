@@ -16,6 +16,7 @@ urlpatterns=[
     path('checkout/', views.checkout, name='checkout'),
     path('order_success/', views.order_success, name='order_success'),
     path('my_orders/', views.my_orders, name='my_orders'),
+    path('profile/', views.Profile, name='profile'),
 ]
 if settings.DEBUG:
     from django.conf import settings

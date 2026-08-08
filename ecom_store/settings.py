@@ -123,3 +123,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = 'product_list'
 LOGOUT_REDIRECT_URL = 'product_list'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

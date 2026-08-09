@@ -21,20 +21,16 @@
         </div>
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-8 col-lg-6 ">
-                <form method="GET" action="{% url 'product_list' %}" class="mb-4">
-                    <div class="row justify-content-center">
-                        <div class="col-12 col-md-8 col-lg-6">
-                            <div class="input-group shadow-sm">
-                                <input type="text" 
-                                        name="search" 
-                                        class="from-control form-control-lg bg-dark  text-light border-secondary px-3 py-2"
-                                        placeholder="እቃዎችን ስም ይፈልጉ..." 
-                                        value="{{ search_query | default:'' }}">
-                                <button class="btn btn-warning px-4 fw-bold" type="submit"> 
-                                    <i class="bi bi-search"></i> ፍለጋ 
-                                </button>
-                            </div>
-                        </div>
+                <form method="GET" action="{% url 'product_list' %}" class="my-4 d-flex justify-content-center">
+                    <div class="input-group " style="max-width: 500px; width: 100%;">
+                        <input type="text" 
+                                name="search" 
+                                class="from-control form-control-lg bg-dark  text-light border-secondary px-3 py-2"
+                                placeholder="እቃዎችን ስም ይፈልጉ..." 
+                                value="{{ search_query | default:'' }}">
+                        <button class="btn btn-warning px-4 d-flex align-items-center gap-1 fw-bold" type="submit"> 
+                            <i class="bi bi-search"></i> ፍለጋ 
+                        </button>
                     </div>
                 </form>
                 {% if search_query %}

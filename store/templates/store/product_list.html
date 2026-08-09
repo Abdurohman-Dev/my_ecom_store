@@ -21,15 +21,20 @@
         </div>
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-8 col-lg-6 ">
-                <form method="GET" action="{% url 'product_list' %}">
-                    {% if selected_category %}
-                        <input type="hidden" name="category" value="{{ selected_category }}">
-                    {% endif %}
-                    <div class="input-group">
-                        <input type="text" name="search" class="from-control form-control-lg bg-dark text-light border-secondary rounded-start-pill px-4 fs-6"
-                            placeholder="እቃዎችን ስም ይፈልጉ..." value="{{ search_query | default:'' }}">
-                        <button class="btn btn-warning rounded-end-pill px-4 fw-bold" type="submit"> 
-                            <i class="bi bi-search"></i> ፍለጋ </button>
+                <form method="GET" action="{% url 'product_list' %}" class="mb-4">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-8 col-lg-6">
+                            <div class="input-group shadow-sm">
+                                <input type="text" 
+                                        name="search" 
+                                        class="from-control form-control-lg bg-dark  text-light border-secondary px-3 py-2"
+                                        placeholder="እቃዎችን ስም ይፈልጉ..." 
+                                        value="{{ search_query | default:'' }}">
+                                <button class="btn btn-warning px-4 fw-bold" type="submit"> 
+                                    <i class="bi bi-search"></i> ፍለጋ 
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 {% if search_query %}
@@ -40,37 +45,111 @@
             </div>
         </div>
         <div class="text-center mb-4">
-            <span class="badge bg-info text-dark fs-6  px-4 py-2 rounded-pill shadow-sm">የተገኙ እቃዎች ብዛት፡- {{ product_count|length }}</span>
+            <span class="badge bg-info text-dark fs-6  px-4 py-2 rounded-pill shadow-sm">   
+                የተገኙ እቃዎች ብዛት፡- {{ product_count}}</span>
         </div>
         <div class="row g-4">
             {% for product in products %}
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="card h-100 bg-dark text-light border-secondary shadow-lg rounded-4 overflow-hidden">
-                        {% if product.image %} 
-                            <div class="bg-white p-3 text-center" style="height: 230px;">
-                                <img src="{{ product.image.url }}" class="img-fluid h-100" style="object-fit: contain;" alt="{{ product.name }}">
-                            </div>
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title text-primary fw-bold"> <a href="{% url 'product_detail' product.pk %}"> {{ product.name }} </a> </h5>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 bg-dark text-light border-secondary shadow-lg rounded-4 overflow-hidden d-flex flex-column">
+                    {% if product.image %}
+                    <div class="bg-white p-3 text-center d-flex align-items-center justify-content-center" style="height: 240px;">
+                        <img src="{{ product.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain;" alt="{{ product.name }}">
+                    </div>
+                    {% else %}
+                    <div class="bg-secondary p-3 text-center d-flex align-items-center justify-content-center text-light" style="height: 240px;">
+                        <span>ምስል የለውም</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column justify-content-between p-4">
+                        <div>
+
+                            <h5 class="card-title text-warning fw-bold text-truncate mb-2">
+                                <a href="{% url 'product_detail' product.pk %}" class="text-decoration-none text-warning">
+                                    {{ product.name }}
+                                </a>
+                            </h5>
+
                             {% if product.category %}
-                                <span class="badge bg-secondary mb-2"> {{ product.category.name }} </span>
-                            {% else %}
-                                <span class="badge bg-secondary mb-2"> ምንም ካቴጎሪ የለውም </span>
+                                <span class="badge bg-secondary text-light mb-3 px-3 py-1 rounded-pill">{{ product.category.name }}</span>
                             {% endif %}
-                            <p class="card-text text-muted">{{ product.description | truncatewords:10 }}</p>
-                            <h6 class="text-success fw-bold"> {{ product.price }} Birr.</h6>
-                            <p class="small text-secondary"> ስቶክ ላይ ያለው:- {{ product.stock }}</p>
-                            <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-primary btn-sm w-100"> ዝርዝሩን እይ </a>
-                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning rounded-pill  fw-bold"> ወደ ግዢ ቅርጫት ጨምር </a>
+
+                            <p class="card-text text-light opacity-75 small mb-3">
+                                {{ product.description|truncatewords:8 }}
+                            </p>
                         </div>
+
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="text-success fw-bold mb-0">{{ product.price }} Birr</h5>
+                                <small class="text-light opacity-75">ስቶክ፦ {{ product.stock }}</small>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-info rounded-pill fw-bold btn-sm">
+                                    👁️ ዝርዝሩን አሳይ
+                                </a>
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning rounded-pill fw-bold btn-sm text-dark">
+                                    🛒 ወደ ግዢ ቅርጫት ጨምር
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+            </div>
             {% empty %}
-                <div class="col-12 text-center">
-                    <p class="alert alert-warning"> ምንም የተመዘገበ ዕቃ የለም፡፡ </p>
-                </div>
+            <div class="col-12 text-center py-5">
+                <h4 class="text-muted">ምንም አይነት እቃ አልተገኘም።</h4>
+            </div>
             {% endfor %}
+        </div>
+            {% if products.has_other_pages %}
+            <nav aria-label="Product Pagination" class="mt-5">
+                <ul class="pagination justify-content-center flex-wrap gap-2">
+                    {% if products.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link rounded-pill px-3 bg-dark text-warning border-secondary shadow-sm" 
+                            href="?page={{ products.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                                &laquo; ቀዳሚ
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-pill px-3 bg-secondary text-light border-0 opacity-50">&laquo; ቀዳሚ</span>
+                        </li>
+                    {% endif %}
+                    {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link rounded-circle fw-bold bg-warning text-dark border-warning shadow">{{ num }}</span>
+                            </li>
+                        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link rounded-circle bg-dark text-light border-secondary" 
+                                href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if products.has_next %}
+                        <li class="page-item">
+                            <a class="page-link rounded-pill px-3 bg-dark text-warning border-secondary shadow-sm" 
+                            href="?page={{ products.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                                ቀጣይ &raquo;
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-pill px-3 bg-secondary text-light border-0 opacity-50">ቀጣይ &raquo;</span>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

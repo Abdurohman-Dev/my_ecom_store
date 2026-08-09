@@ -21,7 +21,7 @@ def product_list(request):
     if search_query:
         products = products.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
     product_count = products.count()
-    paginator = Paginator(products, 4)
+    paginator = Paginator(products, 3)
     page_number = request.GET.get('page')    
     page_obj = paginator.get_page(page_number)
     return render (request, 'store/product_list.html' , {

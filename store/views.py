@@ -1,5 +1,5 @@
 from django.shortcuts import render , get_object_or_404 , redirect
-from .models import OrderItem, Product , Category
+from .models import OrderItem, Product , Category, Review
 from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Cart, CartItem, Product, Order, OrderItem
 from .forms import UserUpdateForm , ProfileUpdateForm
 from .models import Profile as ProfileModel
+from django.core.paginator import Paginator
 def product_list(request):
     category_id = request.GET.get('category')
     search_query = request.GET.get('search')
@@ -20,18 +21,37 @@ def product_list(request):
     if search_query:
         products = products.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
     product_count = products.count()
-
-    
+    paginator = Paginator(products, 4)
+    page_number = request.GET.get('page')    
+    page_obj = paginator.get_page(page_number)
     return render (request, 'store/product_list.html' , {
-        'products': products,
+        'products': page_obj,
         'categories': categories, 
         'product_count': product_count, 
         'selected_category': selected_category,
         'search_query': search_query
     })
+def add_review(request, pk):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+        product = get_object_or_404(Product, id=pk)
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+
+        if rating and comment:
+            Review.objects.create(
+                product=product,
+                user=request.user,
+                rating=int(rating),
+                comment=comment
+            )
+    return redirect('product_detail', pk=pk)
 def product_detail(request,pk):
     product = get_object_or_404(Product,pk=pk)
-    return render(request,'store/product_detail.html',{'product':product})
+    reviews = product.reviews.all().order_by('created_at')
+
+    return render(request,'store/product_detail.html',{'product':product, 'reviews': reviews})
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

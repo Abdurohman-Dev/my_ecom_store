@@ -31,6 +31,54 @@
                         <p class="text-secondary small"> የተመዘገበበት ቀን:- {{ product.created_at }}</p>
                         <hr>
                         <a href="{% url 'product_list' %}" class="btn btn-secondary"> ወደ እቃዎች ዝርዝር ተመለስ </a>
+                        <hr class="my-4">
+                        <div class="row mt-5">
+                        <h4 class="text-warning mb-4"> <i class="bi bi-chat-left-text"></i> የደንበኞች አስተያየት  እና ኮኮብ (Reviews) </h4>
+                        {% if user.is_authenticated %}
+                            <div class="card bg-dark text-light border-secondary p-4 rounded-4 mb-4">
+                                <h5 class="card-warning mb-3"> አስተያትዎን ያጋሩ </h5>
+                                <form action="{% url 'add_review' product.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted small"> ኮኮብ ይስጡ (Rating) </label>
+                                        <select class="form-select bg-dark text-warning border-secondary rounded-3" name="rating">
+                                            <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; (5 - በጣም ምርጥ) </option>
+                                            <option value="4">&#9733;&#9733;&#9733;&#9733; (4 - ጥሩ) </option>
+                                            <option value="3">&#9733;&#9733;&#9733; (3 - መካክለኛ) </option>
+                                            <option value="2">&#9733;&#9733; (2 - ዝቅተኛ) </option>
+                                            <option value="1">&#9733; (1 - መጥፎ) </option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="comment" class="form-label text-muted small">አስተያየትዎን ይጻፉ</label>
+                                        <textarea class="form-control bg-dark text-light border-secondary" name="comment" id="comment" rows="3" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning btn-sm rounded-pill px-3 fw-bold"> የምርት አስተያየት አስገባ </button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <p class="text-muted small mb-4 "> አስተያየት ለመስጠት እባክዎ አስቀድመው <a href="{% url 'login' %}" class="text-warning"> ይግቡ (Login) </a></p>
+                        {% endif %}
+                        <div class="reviews-list mt-4">
+                            {% for review in reviews %}
+                                <div class="card bg-dark text-light p-3 mb-2 rounded-3 border border-secondary">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong class="text-warning fs-6 "> {{review.user.username}}</strong>
+                                        <span class="text-warning fs-6">
+                                            {% if review.rating == 5 %}⭐⭐⭐⭐⭐{% endif %}
+                                            {% if review.rating == 4 %}⭐⭐⭐⭐&#9734;{% endif %}
+                                            {% if review.rating == 3 %}⭐⭐⭐&#9734;&#9734;{% endif %}
+                                            {% if review.rating == 2 %}⭐⭐&#9734;&#9734;&#9734;{% endif %}
+                                            {% if review.rating == 1 %}⭐&#9734;&#9734;&#9734;&#9734;{% endif %}
+                                        </span>
+                                    </div>
+                                    <p class="mb-1 text-white fs-6">{{ review.comment }}</p>
+                                    <small class="text-muted" style="font-size: 0.75rem;">{{ review.created_at|date:"M d, Y" }}</small>
+                                </div>
+                            {% empty %}
+                                <p class="text-muted small"> እስካሁን ምንም አስተያየት አልተሰጠም። የመጀመሪያ አስተያየት ስጭ ይሁኑ! </p>
+                            {% endfor%}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,15 +1,56 @@
 {% extends 'store/base.html' %}
+
 {% block content %}
-<div class="container text-center my-5 py-5">
-    <div class="card bg-dark text-light p-5 shadow border-success mx-auto" style="max-width: 600px;">
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="card bg-dark text-light border-success shadow-lg rounded-4 p-4 p-md-5 text-center" style="max-width: 650px; width: 100%;">
+        
+        <!-- የስኬት ምልክት (Success Icon) -->
         <div class="mb-4">
-            <span class="fs-1 text-success">Congra</span>
+            <div class="d-inline-flex align-items-center justify-content-center bg-success text-light rounded-circle shadow" style="width: 90px; height: 90px;">
+                <span class="fs-1 fw-bold">✓</span>
+            </div>
         </div>
-        <h2 class="text-success fw-bold mb-3"> ትዕዛዝዎ ብስኬት ተመዝግቧል! </h2>
-        <p class="fs-5 text-primary mb-4">ስለገዙ እናመሰግናለን፡፡ የትዕዛዝዎ መረጃ ደርሶናል፣ በቅርቡ እናድርስዎታለን፡፡ </p>
-        <div>
-            <a href="{% url 'product_list' %}" class="btn btn-warning btn-lg rounded-pill px-4 py-2 fw-bold shadow">ወደ ምርቶች ገጽ ተመለስ </a>
+
+        <!-- ዋና የአንኳኳይ ፅሁፍ -->
+        <h1 class="text-success fw-bold mb-2 fs-2">እንኳን ደስ አለዎት!</h1>
+        <h3 class="text-light fw-semibold mb-4 fs-4">ትዕዛዝዎ በስኬት ተመዝግቧል!</h3>
+
+        <p class="text-light opacity-75 fs-5 mb-4">
+            ስለገዙ እናመሰግናለን። የትዕዛዝዎን መረጃ ተቀብለናል፤ በቅርቡ አዘጋጅተን ባስቀመጡልን አድራሻ እናደርሳለን።
+        </p>
+
+        <!-- የትዕዛዝ ማጠቃለያ ካርድ (ከኖረ) -->
+        {% if order %}
+        <div class="bg-secondary bg-opacity-25 rounded-3 p-3 mb-4 text-start border border-secondary">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-warning fw-bold">የትዕዛዝ ቁጥር፦</span>
+                <span class="text-light fw-bold">#{{ order.id }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">ተቀባይ፦</span>
+                <span class="text-light">{{ order.full_name }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">ስልክ፦</span>
+                <span class="text-light">{{ order.phone_number }}</span>
+            </div>
+            <div class="d-flex justify-content-between border-top border-secondary pt-2 mt-2">
+                <span class="text-warning fw-bold">ጠቅላላ የተከፈለ፦</span>
+                <span class="text-success fw-bold fs-5">{{ order.total_price }} Birr</span>
+            </div>
         </div>
+        {% endif %}
+
+        <!-- የተግባር ቁልፎች (Action Buttons) -->
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mt-3">
+            <a href="{% url 'my_orders' %}" class="btn btn-warning btn-lg rounded-pill fw-bold text-dark px-4 py-2 fs-6">
+                📦 የእኔ ትዕዛዞች (My Orders)
+            </a>
+            <a href="{% url 'product_list' %}" class="btn btn-outline-light btn-lg rounded-pill px-4 py-2 fs-6">
+                🛒 ተጨማሪ እቃዎችን ይግዙ
+            </a>
+        </div>
+
     </div>
 </div>
 {% endblock %}

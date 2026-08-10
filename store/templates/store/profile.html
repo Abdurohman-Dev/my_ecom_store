@@ -2,51 +2,83 @@
 
 {% block content %}
 <style>
-    .form-control::placeholder{
-        color: #aaaaaa !important;
-        opacity: 1 !important;
+    /* Placeholder ጽሁፉ ነጭ/ፈዘዝ ያለ እንዲሆን ማድረግ */
+    .custom-input::placeholder {
+        color: #a0a0a0 !important;
+        opacity: 0.8;
     }
 </style>
-<div class="container py-4">
+
+<div class="container py-5" style="min-height: 80vh;">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card bg-dark text-light border-secondary shadow-lg rounded-4 overflow-hidden p-4">
-                <div class="text-center mb-4">
-                    <h2 class="text-warning fw-bold mb-3"> የግል መረጃ (Profile) </h2>
-                        {% if user.profile.profile_image %}
-                            <img src="{{ user.profile.profile_image.url }}" class="rounded-circle border border-warning border-3  mb-3" style="width: 120px; height: 120px; object-fit: cover;"> 
-                        {% else %}
-                            <i class="bi bi-person-circle text-warning display-1 mb-3"></i>
-                        {% endif %}
-                        <h3 class="fw-bold text-warning mb-0">{{ user.username }}</h3>
-                        <p class="text-muted small">{{ user.email }}</p>
+            <div class="card bg-dark text-light border-secondary shadow-lg rounded-4 overflow-hidden">
+                
+                <!-- Header -->
+                <div class="card-header bg-secondary bg-opacity-25 border-secondary text-center py-4">
+                    <h3 class="text-warning fw-bold mb-0">👤 የግል መረጃ (Profile)</h3>
                 </div>
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <h5 class="text-warning border-bottom border-secondary pb-2 mb-3"> የመለያ መረጃዎች (Account Information) </h5>
-                    <div class="mb-3">
-                        <label class="form-label text-muted"> የተጠቃሚ ስም (Username)</label>
-                        <input type="text" name="username" value="{{ user_form.username.value }}" class="form-control bg-black text-light border-secondary rounded-3" placeholder="የተጠቃሚ ስምዎን ያስገቡ...">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted"> ኢሜይል (Email)</label>
-                        <input type="email" name="email" value="{{ user_form.email.value }}" class="form-control bg-black text-light border-secondary rounded-3" placeholder="ኢሜይልዎን ያስገቡ (ምሳሌ: example@gmail.com) ">
-                    </div>
-                    <h5 class="text-warning border-bottom border-secondary pb-2 mb-3 mt-4"> የግል መረጃዎች (Personal Information) </h5>
-                    <div class="mb-3">
-                        <label class="form-label text-muted"> ስልክ ቁጥር (Phone Number)</label>
-                        <input type="text" name="phone_number" value="{{ profile_form.phone_number.value|default:''}}" class="form-control bg-black text-light border-secondary rounded-3" placeholder="ስልክ ቁጥርዎን ያስገቡ (ምሳሌ:0911223344)">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted">አድራሻ (Address)</label>
-                        <textarea name="address" class="from-control bg-black text-light border-secondary rounded-3" row="3" placeholder="ሙሉ አድራሻዎን ያስገቡ (ክልል፣ ዞን፣ ወረዳ...)">{{profile_form.address.value|default:''}}</textarea>
-                    </div>
-                    <div class="mb-4 pb-2">
-                        <label class="form-label text-warning small fw-bold"> ፕሮፋይል ምስል (Profile Image)</label>
-                        <input type="file" name="profile_image" class="form-control bg-black text-light border-secondary rounded-3"
-                    </div>
-                    <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill py-2 mt-2">መረጃውን አስቀምጥ (Save Changes)</button>
-                </form>
+
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Profile Image Avatar -->
+                        <div class="text-center mb-4">
+                            <div class="position-relative d-inline-block">
+                                {% if user.profile.image %}
+                                    <img src="{{ user.profile.image.url }}" alt="Profile" class="rounded-circle border border-warning border-3 shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                                {% else %}
+                                    <div class="rounded-circle border border-warning border-3 d-flex align-items-center justify-content-center bg-secondary text-warning fs-1 fw-bold shadow mx-auto" style="width: 120px; height: 120px;">
+                                        {{ user.username|slice:":1"|upper }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <h4 class="text-warning fw-bold mt-2 mb-0">{{ user.username }}</h4>
+                        </div>
+
+                        <!-- Account Information Section -->
+                        <h5 class="text-warning fw-bold border-bottom border-secondary pb-2 mb-3 fs-5">
+                            🔑 የመለያ መረጃዎች (Account Information)
+                        </h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-light fw-semibold">የተጠቃሚ ስም (Username)</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary py-2" value="{{ user.username }}" readonly>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-light fw-semibold">ኢሜይል አድራሻ (Email)</label>
+                            <input type="email" name="email" class="form-control custom-input bg-dark text-light border-secondary py-2" value="{{ user.email|default:'' }}" placeholder="ምሳሌ: example@gmail.com">
+                        </div>
+
+                        <!-- Personal Information Section -->
+                        <h5 class="text-warning fw-bold border-bottom border-secondary pb-2 mb-3 fs-5">
+                            📞 የግል መረጃዎች (Personal Information)
+                        </h5>
+
+                        <div class="mb-3">
+                            <label class="form-label text-light fw-semibold">ስልክ ቁጥር (Phone Number)</label>
+                            <input type="text" name="phone_number" class="form-control custom-input bg-dark text-light border-secondary py-2" value="{{ user.profile.phone_number|default:'' }}" placeholder="ምሳሌ: 0911223344">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-light fw-semibold">ሙሉ አድራሻ (Full Address)</label>
+                            <textarea name="address" class="form-control custom-input bg-dark text-light border-secondary" rows="3" placeholder="ምሳሌ: አማራ ክልል፣ ደቡብ ወሎ፣ ወግዲ...">{{ user.profile.address|default:'' }}</textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-light fw-semibold">ፕሮፋይል ፎቶ (Profile Image)</label>
+                            <input type="file" name="image" class="form-control bg-dark text-light border-secondary">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-warning w-100 py-3 rounded-pill fw-bold text-dark fs-5 shadow mt-2">
+                            💾 መረጃውን አስቀምጥ (Save Changes)
+                        </button>
+
+                    </form>
+                </div>
             </div>
         </div>
     </div>

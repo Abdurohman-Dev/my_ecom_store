@@ -1,68 +1,122 @@
 {% extends 'store/base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <h2 class="text-warning text-center mb-4 fw-bold">
-        <i class="bi bi-bag-check-fill me-2"></i> የኔ ትዕዛዞች (My Orders) </h2>
+<div class="container py-5" style="min-height: 80vh;">
+    <!-- አርዕስት -->
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="text-warning fw-bold fs-2 mb-0">🛍️ የእኔ ትዕዛዞች (My Orders)</h2>
+    </div>
+
     {% if orders %}
-    <div class="row g-4 justify-content-center">
         {% for order in orders %}
-            <div class="col-12 col-md-10 col-lg-8">
-                <div class="card bg-dark text-light border-secondary shadow-lg rounded-4 overflow-hidden">
-                    <div class="card-header bg-black border-secondary align-items-center d-flex justify-content-between flex-wrap gap-2 py-3 px-4">
-                        <div>
-                            <h5 class="mb-0 fw-bold text-warning"> ትዕዛዝ {{ order.id }} </h5>
-                            <small class="text-muted"> የታዘዘበት ቀን: {{ order.created_at|date:"M d, Y - h:i A" }} </small>
-                        </div>
-                        <div>
-                            {% if order.status == 'Pending' %}
-                                <span class="badge bg-warning text-dark fs-6 rounded-pill px-3 py-2">
-                                    <i class="bi bi-hourglass-split me-1"></i> በሂደት ላይ (Pending) 
-                                </span>
-                            {% elif order.status == 'Shipped' %}
-                                <span class="badge bg-info text-dark fs-6 rounded-pill px-3 py-2">
-                                    <i class="bi bi-truck me-1"></i> ተልኳል (Shipped) 
-                                </span>
-                            {% else %}
-                                <span class="badge bg-success fs-6 rounded-pill px-3 py-2">
-                                    <i class="bi bi-check-circle-fill me-1"></i> ተከፍሏል (Delivered)
-                                </span>
+            <div class="card bg-dark text-light border-secondary shadow-lg rounded-4 mb-4 overflow-hidden">
+                
+                <!-- የካርዱ በላይኛው ክፍል (Header) -->
+                <div class="card-header bg-secondary bg-opacity-25 border-secondary p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fs-4 fw-bold text-warning">ትዕዛዝ #{{ order.id }}</span>
+                        <small class="text-light ms-3 fs-6">{{ order.created_at|date:"M d, Y - h:i A" }}</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        {% if order.status == 'Pending' or not order.status %}
+                            <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill fw-bold">⏳ በሂደት ላይ (Pending)</span>
+                            
+                            <!-- የማጥፊያ / መሰረዣ ቁልፍ -->
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 fw-bold]"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ order.id }}"> ትዕዛዝ ሰርዝ 
+                            </button>
+                        {% elif order.status == 'Completed' or order.status == 'Delivered' %}
+                            <span class="badge bg-success text-light fs-6 px-3 py-2 rounded-pill fw-bold">✓ ተደርሷል (Delivered)</span>
+                        {% else %}
+                            <span class="badge bg-info text-dark fs-6 px-3 py-2 rounded-pill fw-bold">{{ order.status }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- የካርዱ አካል (Body) -->
+                <div class="card-body p-4">
+                    <h5 class="text-warning fw-bold fs-5 mb-3">የታዘዙ እቃዎች፦</h5>
+                    
+                    <!-- የእቃዎች ዝርዝር -->
+                    <div class="table-responsive mb-3">
+                        <table class="table table-dark table-borderless align-middle mb-0">
+                            <thead class="border-bottom border-secondary text-muted fs-6">
+                                <tr>
+                                    <th>እቃ</th>
+                                    <th class="text-center">ብዛት</th>
+                                    <th class="text-end">ዋጋ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                    <tr class="border-bottom border-secondary border-opacity-25">
+                                        <td class="fs-5 text-light fw-semibold">{{ item.product.name }}</td>
+                                        <td class="text-center fs-5 text-light">{{ item.quantity }}</td>
+                                        <td class="text-end fs-5 text-light">{{ item.price }} Birr</td>
+                                    </tr>
+                                {% empty %}
+                                    {% if order.product %}
+                                        <tr>
+                                            <td class="fs-5 text-light fw-semibold">{{ order.product.name }}</td>
+                                            <td class="text-center fs-5 text-light">1</td>
+                                            <td class="text-end fs-5 text-light">{{ order.total_price }} Birr</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr class="border-secondary my-3">
+
+                    <!-- የአድራሻ እና የጠቅላላ ክፍያ መረጃ -->
+                    <div class="row align-items-center">
+                        <div class="col-md-8 mb-2 mb-md-0">
+                            <p class="mb-1 fs-6 text-light opacity-90">
+                                <strong class="text-warning">የማድረሻ አድራሻ፦</strong> {{ order.address }}
+                            </p>
+                            {% if order.phone_number %}
+                                <p class="mb-0 fs-6 text-light opacity-90">
+                                    <strong class="text-warning">ስልክ ቁጥር፦</strong> {{ order.phone_number }}
+                                </p>
                             {% endif %}
                         </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="fs-5 fw-bold text-light d-block">ጠቅላላ ዋጋ፦</span>
+                            <span class="fs-3 fw-bold text-success">{{ order.total_price }} Birr</span>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
-                        <h6 class="text-light fw-bold border-bottom border-secondary pb-2 mb-3"> የታዘዙ እቃዎች:-</h6
-                        <ul class="list-group list-group-flush mb-3">
-                            {% for item in order.items.all %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-dark text-light border-secondary">
-                                    <div> 
-                                        <span class="fw-semibold text-warning">{{item.product.name}} </span>
-                                        <span class="text-muted small ms-2">x {{item.quantity}} </span>
-                                    </div>
-                                    <span class="fw-bold "> {{ item.price}} Birr</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        <div class="row pt-2 border-top border-secondary">
-                            <div class="col-sm-6 mb-2 mb-sm-0"
-                                <small class="text-muted d-block"> አድራሻ:-{{ order.address }} </small>
-                                <small class="text-muted d-block"> ስልክ:- {{ order.phone_number}}</small>
-                            </div>
-                            <div class="col-sm-6 text-sm-end">
-                                <span class="text-muted small"> ጠቅላላ ዋጋ:-</span>
-                                <h4 class="text-success fw-bold mb-0 "> {{ order.total_price }} Birr</h4>
-                            </div>
+
+                </div>
+            </div>
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal{{ order.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-dark text-light border-secondary shadow-lg">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title text-warning fw-bold">⚠️ ትዕዛዝ መሰረዝ</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-start fs-5">
+                            እርግጠኛ ነዎት <strong class="text-warning"> ትዕዛዝ #{{ order.id }}</strong> መስረዝ ይፈልጋሉ?
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">ተመለስ</button>
+                            <a href="{% url 'cancel_order' order.id %}" class="btn btn-danger rounded-pill px-4 fw-bold">አዎ፣ ሰርዝ</a>
                         </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
-    </div>
-{% else %}
-    <div class="alert alert-info text-center bg-dark text-light border-info my-5">
-        <h4>እስካሁን ምንም ያዘዙት ትዕዛዝ የለም!</h4>
-        <a href="{url 'product_list'}" class="btn btn-warning mt-3 rounded-pill fw-bold"> ምርቶችን ይመልከቱ</a>
-    </div>
-{% endif %}
+    {% else %}
+        <div class="text-center py-5 bg-dark rounded-4 border border-secondary p-5">
+            <h3 class="text-muted mb-4 fs-3">እስካሁን ምንም አይነት ትዕዛዝ አልፈጸሙም።</h3>
+            <a href="{% url 'product_list' %}" class="btn btn-warning btn-lg rounded-pill fw-bold text-dark px-4 py-2 fs-5">
+                🛒 አሁኑኑ እቃዎችን ይግዙ
+            </a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

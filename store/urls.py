@@ -18,6 +18,7 @@ urlpatterns=[
     path('my_orders/', views.my_orders, name='my_orders'),
     path('profile/', views.Profile, name='profile'),
     path('product/<int:pk>/add-review/', views.add_review, name='add_review'),
+    path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
 ]
 if settings.DEBUG:
     from django.conf import settings

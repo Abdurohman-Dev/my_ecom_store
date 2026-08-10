@@ -152,3 +152,11 @@ def Profile(request):
         'profile_form': profile_form
     }
     return render(request, 'store/profile.html', context)
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    if order.status == 'Pending' or not order.status:
+        order.delete()
+        messages.success(request, f"ትዕዛዝ #{order_id} በስኬት ተስርዝዋል። ")
+    else:
+        messages.error(request, "ይህ ትዕዛዝ ቀድሞ ስለተላከ መሰለዝ አይቻልም።")
+    return redirect('my_orders')
